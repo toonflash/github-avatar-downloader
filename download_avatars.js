@@ -17,15 +17,15 @@ function getRepoContributors(repoOwner, repoName, cb) {
     request(options, function(err, res, body) {
         var parsedData = JSON.parse(body);
         parsedData.forEach(log)
-
         cb(err, parsedData);
 
         function log(element) {
-            console.log("Avatar URL: ", element.avatar_url);
+            var avatarPath = element.avatar_url;
+            var avatarFile = element.id;
+            
+            downloadImageByURL(avatarPath, "./avatars/"+ avatarFile + ".jpg")
         }
-        
     });
-
 }
 
 function downloadImageByURL(url, filePath) {
@@ -36,6 +36,7 @@ function downloadImageByURL(url, filePath) {
             throw err;
         })
 
+        // letting me know that everything is ok by giving me 200's
         .on('response', function (response) { 
             console.log('Response Status Code: ', response.statusCode);
         })
@@ -43,8 +44,6 @@ function downloadImageByURL(url, filePath) {
        .pipe(fs.createWriteStream(filePath));
 
 }
-
-downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg")
 
 getRepoContributors("jquery", "jquery", function(err, result) {
     // console.log("Errors:", err);
